@@ -8,7 +8,13 @@ class Card:
 
     def card_value(self) -> int:
         if 2 <= self.card_num <= 10:
-            return self.card_num
+            self.value = self.card_num
+
+        if 11 <= self.card_num <= 13:
+            self.value = 10
+
+        if self.card_num == 1:
+            self.value = 11
 
 class Deck:
     """
