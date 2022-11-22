@@ -1,3 +1,5 @@
+from random import shuffle
+
 class Card:
     """
     Lager ett kort som er 1-indexed (ess = 1, 2 = 2, osv.)
@@ -33,8 +35,8 @@ class Deck:
                 yield card.__dict__
 
     def create_deck(self):
-        for _ in range(self.deck_count):
-            self.deck = [card for card in self.create_cards()]
+        self.deck = [card for card in self.create_cards()]*self.deck_count
+        shuffle(self.deck)
 
 
 class Player:
