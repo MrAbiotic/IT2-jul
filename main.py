@@ -16,6 +16,7 @@ class Card:
         elif self.num == 1:
             self.value = 11
 
+
 class Deck:
     """
     Lager en eller flere kortstokker
@@ -34,4 +35,14 @@ class Deck:
     def create_deck(self):
         for _ in range(self.deck_count):
             self.deck = [card for card in self.create_cards()]
+
+
+class Player:
+    def __init__(self) -> None:
+        pass
+
+
+class Dealer(Player):
+    def __init__(self) -> None:
+        super().__init__()
 
