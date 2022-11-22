@@ -11,15 +11,18 @@ class Card:
             return self.card_num
 
 class Deck:
+    """
+    Lager en eller flere kortstokker
+    """
     def __init__(self, deck_count: int = 1) -> None:
         self.deck_count = deck_count
         self.suits = "♠♡♣♢"
         self.deck = []
     
-    def create_cards(self) -> list:
+    def create_cards(self) -> dict:
         for i in range(1, 14):
             for k in self.suits:
-                return [i, k]
+                return Card(i, k).__dict__
 
     def create_deck(self):
         for i in range(self.deck_count):
