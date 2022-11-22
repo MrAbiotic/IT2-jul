@@ -39,11 +39,6 @@ class Deck:
         shuffle(self.deck)
 
 
-class Player:
-    def __init__(self) -> None:
-        pass
-
-
 class Dealer(Player):
     def __init__(self) -> None:
         super().__init__()
