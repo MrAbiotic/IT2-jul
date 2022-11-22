@@ -10,5 +10,17 @@ class Card:
         if 2 <= self.card_num <= 10:
             return self.card_num
 
+class Deck:
+    def __init__(self, deck_count: int = 1) -> None:
+        self.deck_count = deck_count
+        self.suits = "♠♡♣♢"
+        self.deck = []
+    
+    def create_cards(self) -> list:
+        for i in range(1, 14):
+            for k in self.suits:
+                return [i, k]
 
-print("Hello world")
+    def create_deck(self):
+        for i in range(self.deck_count):
+            self.deck.append(self.create_cards())
