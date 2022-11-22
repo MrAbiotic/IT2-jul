@@ -33,3 +33,11 @@ class Deck:
     def create_deck(self):
         for i in range(self.deck_count):
             self.deck.append(self.create_cards())
+
+class Player:
+    def __init__(self) -> None:
+        pass
+
+class Dealer(Player):
+    def __init__(self) -> None:
+        super().__init__()
