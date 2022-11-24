@@ -58,7 +58,7 @@ class Dealer(Player):
 
 
 class Game:
-    def __init__(self, player_count=1, player_bankroll=1000, deck_count=4):
+    def start_game(self, player_count=1, player_bankroll=1000, deck_count=4): 
         self.players = [
                 Player(player_bankroll, player_num)
                 for player_num, player in enumerate(range(player_count))
@@ -67,4 +67,7 @@ class Game:
         deck = Deck(deck_count=deck_count)
         deck.create_deck()
         self.deck = deck.deck
+
+        print("Velkommen til Viken Fylkeskommune")
+
 
