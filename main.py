@@ -41,9 +41,14 @@ class Deck:
 
 
 class Player:
-    def __init__(self, bankroll) -> None:
+    def __init__(self, bankroll, player_num) -> None:
+        self.player_num = 0
         self.bankroll = bankroll
         self.hand = []
+
+    def action(self):
+        while ["h", "hit", "s", "stand"].index(input(f"Spiller {self.player_num}'s tur:")):
+            pass
 
 
 class Dealer(Player):
@@ -55,8 +60,8 @@ class Dealer(Player):
 class Game:
     def __init__(self, player_count=1, player_bankroll=1000, deck_count=4):
         self.players = [
-                Player(player_bankroll) 
-                for player in range(player_count) 
+                Player(player_bankroll, player_num)
+                for player_num, player in enumerate(range(player_count))
                 if 1 <= player_count <= 6
         ]
         deck = Deck(deck_count=deck_count)
