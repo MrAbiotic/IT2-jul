@@ -41,8 +41,8 @@ class Deck:
 
 
 class Player:
-    def __init__(self) -> None:
-        self.bankroll = 1000
+    def __init__(self, bankroll) -> None:
+        self.bankroll = bankroll
         self.hand = []
 
 
@@ -50,4 +50,16 @@ class Dealer(Player):
     def __init__(self) -> None:
         super().__init__()
         self.hide = True
+
+
+class Game:
+    def __init__(self, player_count=1, player_bankroll=1000, deck_count=4):
+        self.players = [
+                Player(player_bankroll) 
+                for player in range(player_count) 
+                if 1 <= player_count <= 6
+        ]
+        deck = Deck(deck_count=deck_count)
+        deck.create_deck()
+        self.deck = deck.deck
 
