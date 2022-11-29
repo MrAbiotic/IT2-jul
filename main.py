@@ -31,7 +31,7 @@ class Deck:
     def create_cards(self) -> dict:
         for num in range(1, 14):
             for suit in self.suits:
-                card = Card(num, suit)
+                card = Cards(num, suit)
                 yield card.__dict__
 
     def create_deck(self):
@@ -50,7 +50,7 @@ class Player:
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur:")
             while not action_in in self.actions_availible:
-                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)})
+                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)}")
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
@@ -67,7 +67,7 @@ class Dealer(Player):
     def __init__(self) -> None:
         super().__init__()
         self.hide = True
-        self.bankroll = self.bankroll * lenght(self.players) * 5 
+        self.bankroll = self.bankroll * lenght(self.players) * 5
 
 
 class Game:
@@ -86,4 +86,6 @@ class Game:
     def get_card(self):
         return self.deck.pop()
 
-
+def game():
+    spill = Game()
+    spill.start_game()
