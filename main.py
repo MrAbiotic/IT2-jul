@@ -50,14 +50,17 @@ class Player:
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur:")
             while not action_in in self.actions_availible:
-                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)}")
+                print(f"Vær vennlig og tast inn en gyldig handling \
+                        {(str(item) for item in self.actions_availible)}")
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
-                Game.get_card() # OBS! Game byttes ut med hva enn spill-objektet er.
-            if action_in in ["s", "stand"]:
-                Game.get_card() # Samme gjelder her
-            if action_in in ["d", "double"] and len(self.hand) == 2 and self.hand[0]==self.hand[1]:
+                Game.get_card()
+            elif action_in in ["s", "stand"]:
+                Game.get_card()
+            elif action_in in ["d", "double"] \
+            and len(self.hand) == 2 \
+            and self.hand[0]==self.hand[1]:
                 Game.get_card()
                 self.actions_availible.remove("d")
                 self.actions_availible.remove("double")
@@ -89,3 +92,4 @@ class Game:
 def game():
     spill = Game()
     spill.start_game()
+
