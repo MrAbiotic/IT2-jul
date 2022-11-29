@@ -65,7 +65,6 @@ class Player:
 
 class Dealer(Player):
     def __init__(self, bankroll, player_num) -> None: # type: ignore
-        self.player_num = 0
         self.bankroll = bankroll * len(spill.players) * 5
         self.hand = [spill.get_card for i in range(2)]
         self.actions_availible = ["h","hit", "s", "stand"]
