@@ -8,7 +8,7 @@ class Cards:
         self.num = num
         self.suit = suit
 
-    def card_value(self) -> int:
+    def card_value(self) -> int: # type: ignore
         if 2 <= self.num <= 10:
             self.value = self.num
 
@@ -28,7 +28,7 @@ class Deck:
         self.suits = "♠♡♣♢"
         self.deck = []
 
-    def create_cards(self) -> dict:
+    def create_cards(self) -> dict:  # type: ignore
         for num in range(1, 14):
             for suit in self.suits:
                 card = Cards(num, suit)
@@ -40,10 +40,10 @@ class Deck:
 
 
 class Player:
-    def __init__(self, bankroll, player_num) -> None:
+    def __init__(self, bankroll, player_num) -> None: # type: ignore
         self.player_num = 0
         self.bankroll = bankroll
-        self.hand = []
+        self.hand = [spill.get_card() for i in range(2)]
         self.actions_availible = ["h","hit", "s", "stand", "d", "double"]
 
     def action(self):
@@ -55,22 +55,28 @@ class Player:
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
-                Game.get_card()
-            elif action_in in ["s", "stand"]:
-                Game.get_card()
-            elif action_in in ["d", "double"] \
+                self.hand.append(spill.get_card())
+            if action_in in ["s", "stand"]:
+                self.hand.append(spill.get_card())
+            if action_in in ["d", "double"] \
             and len(self.hand) == 2 \
             and self.hand[0]==self.hand[1]:
-                Game.get_card()
+                self.hand.append(spill.get_card())
                 self.actions_availible.remove("d")
                 self.actions_availible.remove("double")
 
 
 class Dealer(Player):
-    def __init__(self) -> None:
-        super().__init__()
-        self.hide = True
-        self.bankroll *= len(Game.players) * 5
+    def __init__(self, bankroll, player_num) -> None: # type: ignore
+        self.player_num = 0
+        self.bankroll = bankroll * len(spill.players) * 5
+        self.hand = [spill.get_card for i in range(2)]
+        self.actions_availible = ["h","hit", "s", "stand"]
+
+    def action(self):
+        if self.actions_availible:
+            while sum([self.hand[val] for val in self.hand]) < 16:
+                self.hand.append(spill.get_card()) # OBS! Game byttes ut med hva enn spill-objektet er.
 
 
 class Game:
@@ -89,7 +95,13 @@ class Game:
     def get_card(self):
         return self.deck.pop()
 
+
 def game():
+    spill = Game()
+    spill.start_game()
+
+
+if __name__ == '__main__':
     spill = Game()
     spill.start_game()
 
