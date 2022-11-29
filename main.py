@@ -50,14 +50,17 @@ class Player:
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur:")
             while not action_in in self.actions_availible:
-                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)}")
+                print(f"Vær vennlig og tast inn en gyldig handling \
+                        {(str(item) for item in self.actions_availible)}")
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
-                self.hand.append(spill.get_card()) # OBS! Game byttes ut med hva enn spill-objektet er.
+                self.hand.append(spill.get_card())
             if action_in in ["s", "stand"]:
-                self.hand.append(spill.get_card()) # Samme gjelder her
-            if action_in in ["d", "double"] and len(self.hand) == 2 and self.hand[0]==self.hand[1]:
+                self.hand.append(spill.get_card())
+            if action_in in ["d", "double"] \
+            and len(self.hand) == 2 \
+            and self.hand[0]==self.hand[1]:
                 self.hand.append(spill.get_card())
                 self.actions_availible.remove("d")
                 self.actions_availible.remove("double")
@@ -66,12 +69,12 @@ class Player:
 class Dealer(Player):
     def __init__(self, bankroll, player_num) -> None: # type: ignore
         self.bankroll = bankroll * len(spill.players) * 5
-        self.hand = [spill.get_card for i in range(2)]
-        self.actions_availible = ["h","hit", "s", "stand"]
+        self.hand = [spill.get_card() for _ in range(2)]
+        self.actions_availible = ["h", "hit", "s", "stand"]
 
     def action(self):
         if self.actions_availible:
-            while sum([self.hand[val] for val in range(len(self.hand))]) < 16:
+            while sum([val for val in card["value"] for card in self.hand]) < 16:
                 self.hand.append(spill.get_card())
 
 
@@ -91,5 +94,13 @@ class Game:
     def get_card(self):
         return self.deck.pop()
 
-spill = Game()
-spill.start_game()
+
+def game():
+    global spill
+    spill = Game()
+    spill.start_game()
+
+
+if __name__ == '__main__':
+    game()
+
