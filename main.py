@@ -67,7 +67,7 @@ class Dealer(Player):
     def __init__(self) -> None:
         super().__init__()
         self.hide = True
-        self.bankroll = self.bankroll * lenght(self.players) * 5
+        self.bankroll = self.bankroll * len(self.players) * 5
 
 
 class Game:
