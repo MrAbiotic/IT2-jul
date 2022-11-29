@@ -70,13 +70,13 @@ class Dealer(Player):
     def __init__(self, bankroll, player_num) -> None: # type: ignore
         self.player_num = 0
         self.bankroll = bankroll * len(spill.players) * 5
-        self.hand = [spill.get_card for i in range(2)]
-        self.actions_availible = ["h","hit", "s", "stand"]
+        self.hand = [spill.get_card() for _ in range(2)]
+        self.actions_availible = ["h", "hit", "s", "stand"]
 
     def action(self):
         if self.actions_availible:
-            while sum([self.hand[val] for val in self.hand]) < 16:
-                self.hand.append(spill.get_card()) # OBS! Game byttes ut med hva enn spill-objektet er.
+            while sum([val for val in card["value"] for card in self.hand]) < 16:
+                self.hand.append(spill.get_card())
 
 
 class Game:
@@ -97,11 +97,11 @@ class Game:
 
 
 def game():
+    global spill
     spill = Game()
     spill.start_game()
 
 
 if __name__ == '__main__':
-    spill = Game()
-    spill.start_game()
+    game()
 
