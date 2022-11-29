@@ -50,7 +50,7 @@ class Player:
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur:")
             while not action_in in self.actions_availible:
-                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)})
+                print(f"Vær vennlig å tast inn en gyldig handling {(str(item) for item in self.actions_availible)}")
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
