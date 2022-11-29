@@ -1,6 +1,5 @@
 from random import shuffle
 
-
 class Card:
     """
     Lager ett kort som er 1-indexed (ess = 1, 2 = 2, osv.)
@@ -47,8 +46,12 @@ class Player:
         self.hand = []
 
     def action(self):
-        while ["h", "hit", "s", "stand"].index(input(f"Spiller {self.player_num}'s tur:")):
-            pass
+        action_in = input(f"Spiller {self.player_num}'s tur:")
+        while not action_in in ["h", "hit", "s", "stand", "d", "double"]:
+            print("Vær vennlig å tast inn en gyldig handling (h/hit, s/stand, d/double)")
+            action_in = input(f"Spiller {self.player_num}'s tur:")
+        if action_in in ["h", "hit"]:
+            Game.get_card() # OBS! Game byttes ut med hva enn spill-objektet er.
 
 
 class Dealer(Player):
@@ -58,7 +61,7 @@ class Dealer(Player):
 
 
 class Game:
-    def start_game(self, player_count=1, player_bankroll=1000, deck_count=4): 
+    def start_game(self, player_count=1, player_bankroll=1000, deck_count=4):
         self.players = [
                 Player(player_bankroll, player_num)
                 for player_num, player in enumerate(range(player_count))
@@ -69,5 +72,8 @@ class Game:
         self.deck = deck.deck
 
         print("Velkommen til Viken Fylkeskommune")
+
+    def get_card(self):
+        return self.deck.pop()
 
 
