@@ -44,14 +44,22 @@ class Player:
         self.player_num = 0
         self.bankroll = bankroll
         self.hand = []
+        self.action_availible = True
 
     def action(self):
-        action_in = input(f"Spiller {self.player_num}'s tur:")
-        while not action_in in ["h", "hit", "s", "stand", "d", "double"]:
-            print("Vær vennlig å tast inn en gyldig handling (h/hit, s/stand, d/double)")
+        if self.action_availible:
             action_in = input(f"Spiller {self.player_num}'s tur:")
-        if action_in in ["h", "hit"]:
-            Game.get_card() # OBS! Game byttes ut med hva enn spill-objektet er.
+            while not action_in in ["h", "hit", "s", "stand", "d", "double"]:
+                print("Vær vennlig å tast inn en gyldig handling (h/hit, s/stand, d/double)")
+                action_in = input(f"Spiller {self.player_num}'s tur:")
+
+            if action_in in ["h", "hit"]:
+                Game.get_card() # OBS! Game byttes ut med hva enn spill-objektet er.
+            if action_in in ["s", "stand"]:
+                Game.get_card() # Samme gjelder her
+            if action_in in ["d", "double"] and len(self.hand) == 2 and self.hand[0]==self.hand[1]:
+                Game.get_card()
+                self.action_availible = False
 
 
 class Dealer(Player):
