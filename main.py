@@ -71,8 +71,8 @@ class Dealer(Player):
 
     def action(self):
         if self.actions_availible:
-            while sum([self.hand[val] for val in self.hand]) < 16:
-                self.hand.append(spill.get_card()) # OBS! Game byttes ut med hva enn spill-objektet er.
+            while sum([self.hand[val] for val in range(len(self.hand))]) < 16:
+                self.hand.append(spill.get_card())
 
 
 class Game:
