@@ -63,6 +63,7 @@ class Player:
         self.win_value = 21
         self.bet = 0
         self.money_back = 0
+        self.doubled = False
 
     def player_turn(self):
         self.bet = float(input(f"Betting ({self.bankroll},-): "))
@@ -74,6 +75,7 @@ class Player:
             self.action()
             self.check_hand()
             self.money_back = self.check_hand()
+        self.print_hand()
         self.bankroll_update()
 
     def action(self):
@@ -90,11 +92,14 @@ class Player:
             if action_in in ["h", "hit"]:
                 self.hand.append(spill.get_card())
 
-            if action_in in ["s", "stand"]:
+            elif action_in in ["s", "stand"]:
                 self.actions_availible = []
-            if action_in in ["d", "double"]:
+            elif action_in in ["d", "double"]:
                 self.hand.append(spill.get_card())
                 self.actions_availible = []
+                self.doubled = True
+            else:
+                print("HVAD SKIER HIER?")
         if "d" in self.actions_availible \
             and "double" in self.actions_availible:
             self.actions_availible.remove("d")
@@ -105,13 +110,16 @@ class Player:
         print("Din hånd:", end=" ")
         for i in self.hand:
             print(f"{i['card_name']}{i['suit']}", end=" ")
-        print(f"\nDin verdi: {sum(self.handlist)}")
-        print(f"Dealers verdi: {spill.dealer.handlist[0]}")
+        print(f"({sum(self.handlist)})")
 
     def print_dealer_hand(self):
         print(f"Dealers hånd: {spill.dealer.hand[0]['card_name']}{spill.dealer.hand[0]['suit']}")
 
-    def check_hand(self):
+    def check_hand(self) -> float:
+        """
+        Funksjonen sjekker hånda di, og returner en multiplikator
+        som indikerer hvor mye du tjener/taper på en runde.
+        """
         print(f"{'#':#^20}")
         self.handlist = [hand["value"] for hand in self.hand]
         if sum(self.handlist) > self.win_value:
@@ -120,19 +128,23 @@ class Player:
         if sum(self.handlist) > self.win_value:
             print("BUST")
             self.actions_availible = []
-            return 0
+            return 0 # Funker perfekt
         elif sum(self.handlist) == self.win_value:
             print("Blackjack")
             self.actions_availible = []
-            return 2.5
+            return 2.5 # Funker perfekt
+        # UNder her oppstår problemene
         elif spill.dealer.dealer_hand_value < self.win_value:
             if sum(self.handlist) == spill.dealer.dealer_hand_value:
-                return 1
+                return 4 # 1
             elif sum(self.handlist) > spill.dealer.dealer_hand_value:
-                return 2
+                if self.doubled:
+                    return 3 # 3
+                else:
+                    return 2 # 2 | ex. P=20, D=23
             else:
-                return 1
-        return 1
+                return 1 # 1 | ex. P=14, D=18
+        return 5 # 1 | ex. P=20, D=10 / P=16, D=21 / P=18, D=23
 
     def check_for_ace(self):
         ace_count = self.handlist.count(11)
@@ -154,6 +166,7 @@ class Player:
         self.win_value = 21
         self.bet = 0
         self.money_back = 0
+        self.doubled = False
 
 
 class Dealer(Player):
@@ -200,7 +213,7 @@ class Game:
 
         print(f"Dealers hånd: {self.dealer.dealer_hand_value}")
         for player in self.players:
-            print(f"PLayer {player.player_num}'s bankroll: {player.bankroll},-")
+            print(f"Player {player.player_num}'s bankroll: {player.bankroll},-")
 
     def get_card(self):
         return self.deck.pop()
