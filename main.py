@@ -65,10 +65,10 @@ class Player:
         self.money_back = 0
 
     def player_turn(self):
-        self.bet = int(input(f"Betting ({self.bankroll},-): "))
+        self.bet = float(input(f"Betting ({self.bankroll},-): "))
         while 0 > self.bet and self.bet > self.bankroll:
             print("Vær vennlig og ikke bruk penger du ikke har")
-            self.bet = int(input(f"Betting ({self.bankroll}): "))
+            self.bet = float(input(f"Betting ({self.bankroll}): "))
         self.bankroll -= self.bet
         while len(self.actions_availible) >= 1:
             self.print_hand()
