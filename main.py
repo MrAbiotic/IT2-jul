@@ -71,21 +71,20 @@ class Player:
             self.bet = float(input(f"Betting ({self.bankroll}): "))
         self.bankroll -= self.bet
         while len(self.actions_availible) >= 1:
-            self.print_hand()
             self.action()
             self.check_hand()
             self.money_back = self.check_hand()
         self.bankroll_update()
 
     def action(self):
-        self.print_dealer_hand()
+        self.print_hand()
         print(f"Spiller {self.player_num}'s tur:\n{self.actions_availible}:")
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur \
                         {list(str(item) for item in self.actions_availible)}:")
             while not action_in in self.actions_availible:
-                print(f"Vær vennlig og tast inn en gyldig handling \
-                        {(str(item) for item in self.actions_availible)}")
+                print(f"\n\n\nVær vennlig og tast inn en gyldig handling \
+                        {self.actions_availible}")
                 action_in = input(f"Spiller {self.player_num}'s tur:")
 
             if action_in in ["h", "hit"]:
@@ -102,21 +101,22 @@ class Player:
             self.actions_availible.remove("double")
 
     def print_hand(self):
+        self.print_dealer_hand()
+        print("Din hånd:", end=" ")
         for i in self.hand:
-            print(f"{i['card_name']}{i['suit']}")
-        print(f"\nTotal verdi: {sum(self.handlist)}")
+            print(f"{i['card_name']}{i['suit']}", end=" ")
+        print(f"\nDin verdi: {sum(self.handlist)}")
+        print(f"Dealers verdi: {spill.dealer.handlist[0]}")
 
     def print_dealer_hand(self):
-        print("Dealers hånd:")
-        print(f"{spill.dealer.hand[0]['card_name']} \
-            {spill.dealer.hand[0]['suit']} ##")
+        print(f"Dealers hånd: {spill.dealer.hand[0]['card_name']}{spill.dealer.hand[0]['suit']}")
 
     def check_hand(self):
         print(f"{'#':#^20}")
         self.handlist = [hand["value"] for hand in self.hand]
         if sum(self.handlist) > self.win_value:
             self.check_for_ace()
-        self.print_hand()
+        # self.print_hand()
         if sum(self.handlist) > self.win_value:
             print("BUST")
             self.actions_availible = []
@@ -163,7 +163,7 @@ class Dealer(Player):
         self.actions_availible = ["h", "hit", "s", "stand"]
         self.dealer_lock = 16
         self.dealer_hand_value = self.dealer_action()
-        print(self.hand, self.dealer_hand_value)
+        # print(self.hand, self.dealer_hand_value)
 
     def dealer_action(self) -> int:
         while sum(self.handlist) < self.dealer_lock:
