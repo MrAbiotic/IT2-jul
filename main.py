@@ -60,6 +60,7 @@ class Player:
         self.hand = [spill.get_card() for i in range(2)]
         self.actions_availible = ["h","hit", "s", "stand", "d", "double"]
         self.handlist = [hand["value"] for hand in self.hand]
+        self.win_value = 21
 
     def player_turn(self):
         self.bet = input(f"Betting ({self.bankroll}): ")
@@ -72,7 +73,7 @@ class Player:
         print(f"Spiller {self.player_num}'s tur:\n{self.actions_availible}:")
         if self.actions_availible:
             action_in = input(f"Spiller {self.player_num}'s tur \
-                        {(str(item) for item in self.actions_availible)}:")
+                        {list(str(item) for item in self.actions_availible)}:")
             while not action_in in self.actions_availible:
                 print(f"Vær vennlig og tast inn en gyldig handling \
                         {(str(item) for item in self.actions_availible)}")
@@ -98,13 +99,13 @@ class Player:
     def check_hand(self):
         print(f"{'#':#^20}")
         self.handlist = [hand["value"] for hand in self.hand]
-        if sum(self.handlist) > 21:
+        if sum(self.handlist) > self.win_value:
             self.check_for_ace()
         self.print_hand()
-        if sum(self.handlist) > 21:
+        if sum(self.handlist) > self.win_value:
             print("BUST")
             return 0
-        if sum(self.handlist) == 21:
+        if sum(self.handlist) == self.win_value:
             print("Blackjack")
             return 1.5
         return 1
@@ -112,7 +113,7 @@ class Player:
     def check_for_ace(self):
         ace_count = self.handlist.count(11)
         for i in range(ace_count):
-            if sum(self.handlist)-10*(i+1) < 21:
+            if sum(self.handlist)-10*(i+1) < self.win_value:
                 for j in range(i+1):
                     self.handlist.append(-10)
                 break
@@ -120,16 +121,17 @@ class Player:
                 self.actions_availible = []
 
 class Dealer(Player):
-    def __init__(self, bankroll, player_num) -> None: # type: ignore
-        self.bankroll = bankroll * len(spill.players) * 5
+    def __init__(self) -> None: # type: ignore
         self.hand = [spill.get_card() for _ in range(2)]
         self.actions_availible = ["h", "hit", "s", "stand"]
+        self.dealer_lock = 16
+        self.dealer_hand_value = self.dealer_action()
 
-    def action(self):
-        if self.actions_availible:
-            while sum([hand["value"] for hand in self.hand]) < 16:
-                self.hand.append(spill.get_card())
-
+    def dealer_action(self):
+        while sum(self.handlist) < self.dealer_lock:
+            self.hand.append(spill.get_card())
+            self.check_for_ace()
+        return sum(self.handlist)
 
 class Game:
     def start_game(self, player_count=1, player_bankroll=1000, deck_count=4):
@@ -140,6 +142,7 @@ class Game:
                 Player(player_bankroll, player_num)
                 for player_num, player in enumerate(range(player_count))
                 if 1 <= player_count <= 6]
+        self.dealer = Dealer()
         print("Velkommen til Viken Fylkeskommune")
 
     def turns(self):
