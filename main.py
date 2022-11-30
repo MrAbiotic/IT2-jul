@@ -65,10 +65,10 @@ class Player:
         self.money_back = 0
 
     def player_turn(self):
-        self.bet = input(f"Betting ({self.bankroll},-): ")
-        while 0 <= self.bet <= self.bankroll:
+        self.bet = int(input(f"Betting ({self.bankroll},-): "))
+        while 0 <= self.bet and self.bet <= self.bankroll:
             print("Vær vennlig og ikke bruk penger du ikke har")
-            self.bet = input(f"Betting ({self.bankroll}): ")
+            self.bet = int(input(f"Betting ({self.bankroll}): "))
         self.bankroll -= self.bet
         while len(self.actions_availible) >= 1:
             self.print_hand()
@@ -121,6 +121,8 @@ class Player:
         if sum(self.handlist) == self.win_value:
             print("Blackjack")
             return 1.5
+        if sum(self.handlist) <= spill.dealer.dealer_hand_value:
+            return 0
         return 1
 
     def check_for_ace(self):
@@ -144,9 +146,9 @@ class Dealer(Player):
         self.actions_availible = ["h", "hit", "s", "stand"]
         self.dealer_lock = 16
         self.dealer_hand_value = self.dealer_action()
-        print(self.hand)
+        print(self.hand, self.dealer_hand_value)
 
-    def dealer_action(self):
+    def dealer_action(self) -> int:
         while sum(self.handlist) < self.dealer_lock:
             self.hand.append(spill.get_card())
 
