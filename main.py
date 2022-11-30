@@ -66,13 +66,14 @@ class Player:
 
     def player_turn(self):
         self.bet = int(input(f"Betting ({self.bankroll},-): "))
-        while 0 <= self.bet and self.bet <= self.bankroll:
+        while 0 > self.bet and self.bet > self.bankroll:
             print("Vær vennlig og ikke bruk penger du ikke har")
             self.bet = int(input(f"Betting ({self.bankroll}): "))
         self.bankroll -= self.bet
         while len(self.actions_availible) >= 1:
             self.print_hand()
             self.action()
+            self.check_hand()
             self.money_back = self.check_hand()
         self.bankroll_update()
 
@@ -89,6 +90,7 @@ class Player:
 
             if action_in in ["h", "hit"]:
                 self.hand.append(spill.get_card())
+
             if action_in in ["s", "stand"]:
                 self.actions_availible = []
             if action_in in ["d", "double"]:
@@ -117,19 +119,26 @@ class Player:
         self.print_hand()
         if sum(self.handlist) > self.win_value:
             print("BUST")
+            self.actions_availible = []
             return 0
-        if sum(self.handlist) == self.win_value:
+        elif sum(self.handlist) == self.win_value:
             print("Blackjack")
-            return 1.5
-        if sum(self.handlist) <= spill.dealer.dealer_hand_value:
-            return 0
+            self.actions_availible = []
+            return 2.5
+        elif spill.dealer.dealer_hand_value < self.win_value:
+            if sum(self.handlist) == spill.dealer.dealer_hand_value:
+                return 1
+            elif sum(self.handlist) > spill.dealer.dealer_hand_value:
+                return 2
+            else:
+                return 1
         return 1
 
     def check_for_ace(self):
         ace_count = self.handlist.count(11)
         for i in range(ace_count):
             if sum(self.handlist)-10*(i+1) < self.win_value:
-                for j in range(i+1):
+                for _ in range(i+1):
                     self.handlist.append(-10)
                 break
             else:
@@ -137,6 +146,14 @@ class Player:
 
     def bankroll_update(self):
         self.bankroll += self.bet * self.money_back
+
+    def empty_hand(self):
+        self.hand = [spill.get_card() for i in range(2)]
+        self.actions_availible = ["h","hit", "s", "stand", "d", "double"]
+        self.handlist = [hand["value"] for hand in self.hand]
+        self.win_value = 21
+        self.bet = 0
+        self.money_back = 0
 
 
 class Dealer(Player):
@@ -158,6 +175,10 @@ class Dealer(Player):
 
         return sum(self.handlist)
 
+    def dealer_empty_hand(self):
+        self.dealer_hand_value = self.dealer_action()
+
+
 class Game:
     def start_game(self, player_count=1, player_bankroll=1000, deck_count=4):
         deck = Deck(deck_count=deck_count)
@@ -167,12 +188,19 @@ class Game:
                 Player(player_bankroll, player_num)
                 for player_num, player in enumerate(range(player_count))
                 if 1 <= player_count <= 6]
-        self.dealer = Dealer(0, -1)
+        self.dealer = Dealer(-1, -1)
         print("Velkommen til Viken Fylkeskommune")
 
     def turns(self):
         for player in self.players:
+            player.empty_hand()
             player.player_turn()
+        self.dealer.empty_hand()
+        self.dealer.dealer_empty_hand()
+
+        print(f"Dealers hånd: {self.dealer.dealer_hand_value}")
+        for player in self.players:
+            print(f"PLayer {player.player_num}'s bankroll: {player.bankroll},-")
 
     def get_card(self):
         return self.deck.pop()
