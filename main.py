@@ -95,6 +95,7 @@ class Player:
             elif action_in in ["s", "stand"]:
                 self.actions_availible = []
             elif action_in in ["d", "double"]:
+                self.bet *= 2
                 self.hand.append(spill.get_card())
                 self.actions_availible = []
             else:
@@ -135,14 +136,12 @@ class Player:
             return 1.5 # Funker perfekt
         if spill.dealer.dealer_hand_value > self.win_value:
             return 1
-        elif spill.dealer.dealer_hand_value == sum(self.handlist):
+        if spill.dealer.dealer_hand_value == sum(self.handlist):
             return 0
-        elif spill.dealer.dealer_hand_value > sum(self.handlist):
+        if spill.dealer.dealer_hand_value > sum(self.handlist):
             return -1
-        elif spill.dealer.dealer_hand_value < sum(self.handlist):
-            return 1
         else:
-            return -100
+            return 1
 
     def check_for_ace(self):
         ace_count = self.handlist.count(11)
@@ -209,6 +208,7 @@ class Game:
         self.dealer.dealer_empty_hand()
 
         print(f"Dealers hånd: {self.dealer.dealer_hand_value}")
+        print(self.dealer.handlist)
         for player in self.players:
             print(f"Player {player.player_num}'s bankroll: {player.bankroll},-")
 
