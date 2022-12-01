@@ -97,7 +97,6 @@ class Player:
             elif action_in in ["d", "double"]:
                 self.hand.append(spill.get_card())
                 self.actions_availible = []
-                self.doubled = True
             else:
                 print("HVAD SKIER HIER?")
         if "d" in self.actions_availible \
@@ -119,6 +118,7 @@ class Player:
         """
         Funksjonen sjekker hånda di, og returner en multiplikator
         som indikerer hvor mye du tjener/taper på en runde.
+        -1 indikerer tap, 0 indikerer likt, 1 indikerer vinn og 1.5 BJ
         """
         print(f"{'#':#^20}")
         self.handlist = [hand["value"] for hand in self.hand]
@@ -128,23 +128,21 @@ class Player:
         if sum(self.handlist) > self.win_value:
             print("BUST")
             self.actions_availible = []
-            return 0 # Funker perfekt
+            return -1 # Funker perfekt
         elif sum(self.handlist) == self.win_value:
             print("Blackjack")
             self.actions_availible = []
-            return 2.5 # Funker perfekt
-        # Under her oppstår problemene
-        elif spill.dealer.dealer_hand_value < self.win_value:
-            if sum(self.handlist) == spill.dealer.dealer_hand_value:
-                return 4 # 1
-            elif sum(self.handlist) > spill.dealer.dealer_hand_value:
-                if self.doubled:
-                    return 3 # 3
-                else:
-                    return 2 # 2 | ex. P=20, D=23
-            else:
-                return 1 # 1 | ex. P=14, D=18
-        return 5 # 1 | ex. P=20, D=10 / P=16, D=21 / P=18, D=23
+            return 1.5 # Funker perfekt
+        if spill.dealer.dealer_hand_value > self.win_value:
+            return 1
+        elif spill.dealer.dealer_hand_value == sum(self.handlist):
+            return 0
+        elif spill.dealer.dealer_hand_value > sum(self.handlist):
+            return -1
+        elif spill.dealer.dealer_hand_value < sum(self.handlist):
+            return 1
+        else:
+            return -100
 
     def check_for_ace(self):
         ace_count = self.handlist.count(11)
@@ -157,7 +155,7 @@ class Player:
                 self.actions_availible = []
 
     def bankroll_update(self):
-        self.bankroll += self.bet * self.money_back
+        self.bankroll += self.bet * (self.money_back + 1)
 
     def empty_hand(self):
         self.hand = [spill.get_card() for i in range(2)]
@@ -166,7 +164,6 @@ class Player:
         self.win_value = 21
         self.bet = 0
         self.money_back = 0
-        self.doubled = False
 
 
 class Dealer(Player):
