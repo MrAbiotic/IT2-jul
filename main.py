@@ -133,7 +133,7 @@ class Player:
             print("Blackjack")
             self.actions_availible = []
             return 2.5 # Funker perfekt
-        # UNder her oppstår problemene
+        # Under her oppstår problemene
         elif spill.dealer.dealer_hand_value < self.win_value:
             if sum(self.handlist) == spill.dealer.dealer_hand_value:
                 return 4 # 1
