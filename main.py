@@ -168,10 +168,7 @@ class Player:
 class Dealer(Player):
     def __init__(self, bankroll, player_num) -> None: # type: ignore
         super().__init__(bankroll, player_num)
-        self.hand = [spill.get_card() for _ in range(2)]
-        self.actions_availible = ["h", "hit", "s", "stand"]
-        self.dealer_lock = 16
-        self.dealer_hand_value = self.dealer_action()
+        self.dealer_empty_hand()
         # print(self.hand, self.dealer_hand_value)
 
     def dealer_action(self) -> int:
@@ -185,6 +182,9 @@ class Dealer(Player):
         return sum(self.handlist)
 
     def dealer_empty_hand(self):
+        self.hand = [spill.get_card() for _ in range(2)]
+        self.actions_availible = ["h", "hit", "s", "stand"]
+        self.dealer_lock = 16
         self.dealer_hand_value = self.dealer_action()
 
 
@@ -207,8 +207,8 @@ class Game:
         self.dealer.empty_hand()
         self.dealer.dealer_empty_hand()
 
-        print(f"Dealers hånd: {self.dealer.dealer_hand_value}")
-        print(self.dealer.handlist)
+        print(f"Dealers totale håndverdi: {self.dealer.dealer_hand_value}")
+        print(self.dealer.handlist) # Fjernes når leveres
         for player in self.players:
             print(f"Player {player.player_num}'s bankroll: {player.bankroll},-")
 
