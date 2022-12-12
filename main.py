@@ -5,12 +5,17 @@ class Cards:
     Lager ett kort som er 1-indexed (ess = 1, 2 = 2, osv.)
     """
     def __init__(self, num: int, suit: str) -> None:
+        # num er nummeret på kortet (1-13)
         self.num = num
+        # card_name er navnet på kortet ("A", "2", "3", etc.)
         self.card_name = self.name_card()
+        # suit er kortets kulør ("♠", "♡", "♣", "♢")
         self.suit = suit
+        # value er verdien til kortet (1-11)
         self.card_value()
 
     def card_value(self) -> int: # type: ignore
+        # Setter verdien til kortet basert på nummeret
         if 2 <= self.num <= 10:
             self.value = self.num
 
@@ -21,6 +26,7 @@ class Cards:
             self.value = 11
 
     def name_card(self):
+        # Returnerer navnet på kortet
         if self.num == 1:
             return "A"
         elif self.num == 11:
@@ -38,39 +44,61 @@ class Deck:
     Lager en eller flere kortstokker
     """
     def __init__(self, deck_count: int = 1) -> None:
+        # deck_count er antallet kortstokker som skal brukes
         self.deck_count = deck_count
+        # suits er kortstokkens kulører ("♠", "♡", "♣", "♢")
         self.suits = "♠♡♣♢"
+        # deck er liste over kortene i kortstokken
         self.deck = []
 
     def create_cards(self) -> dict:  # type: ignore
+        # Lager kortene i kortstokken
         for num in range(1, 14):
             for suit in self.suits:
+                # Lager et nytt kort med nummeret og kuløren
                 card = Cards(num, suit)
+                # Returnerer kortet som et dict
                 yield card.__dict__
 
     def create_deck(self):
+        # Lager en liste over kortene i kortstokken
         self.deck = [card for card in self.create_cards()]*self.deck_count
+        # Blanderer kortene i kortstokken
         shuffle(self.deck)
-
 
 class Player:
     def __init__(self, bankroll, player_num) -> None: # type: ignore
-        self.player_num = player_num
+        # bankroll er spillerens saldo
         self.bankroll = bankroll
+        # player_num er spillerens nummer (1, 2, 3, etc.)
+        self.player_num = player_num
+        # hand er spillerens hånd (liste over kortene i hånden)
         self.hand = [spill.get_card() for i in range(2)]
+        # actions_availible er en liste over handlinger spilleren kan gjøre
         self.actions_availible = ["h","hit", "s", "stand", "d", "double"]
+        # handlist er en liste over verdiene til kortene i hånden
         self.handlist = [hand["value"] for hand in self.hand]
+        # win_value er verdien som skal oppnås for å vinne
         self.win_value = 21
+        # bet er innsatsen til spilleren
         self.bet = 0
+        # money_back er pengene spilleren får tilbake
         self.money_back = 0
+        # doubled er True hvis spilleren har doblet innsatsen sin
         self.doubled = False
 
     def player_turn(self):
+        # Spør spilleren om innsatsen
         self.bet = float(input(f"Betting ({self.bankroll},-): "))
+
+        # Sjekker om innsatsen er gyldig (må være mellom 0 og bankrollen)
         while 0 > self.bet and self.bet > self.bankroll:
             print("Vær vennlig og ikke bruk penger du ikke har")
             self.bet = float(input(f"Betting ({self.bankroll}): "))
+        # Trekker innsatsen fra spillerens bankroll
         self.bankroll -= self.bet
+
+        # Sjekker om spilleren har flere gydlige handlinger (Dersom han har 1 eller flere handlinger tilgjengelig)
         while len(self.actions_availible) >= 1:
             self.action()
             self.check_hand()
